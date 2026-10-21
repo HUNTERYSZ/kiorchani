@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>KIOR</title>
+<style>
+:root{--bg:#0d0d14;--card:#13131f;--border:#1e1e2e;--accent:#ed4245;--accent2:#57f287;--text:#e0e0e0;--muted:#6b6b8a;--input:#1a1a28}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;min-height:100vh}
+.hidden{display:none!important}
+#login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:2rem;width:340px}
+.login-box h2{text-align:center;margin-bottom:1.5rem;font-size:1.1rem;letter-spacing:.08em;color:var(--accent)}
+.field{display:flex;flex-direction:column;gap:.4rem;margin-bottom:.9rem}
+.field label{font-size:.73rem;letter-spacing:.07em;color:var(--muted)}
+.field input{background:var(--input);border:1px solid var(--border);border-radius:8px;padding:.6rem .8rem;color:var(--text);font-size:.88rem;outline:none}
+.field input:focus{border-color:var(--accent)}
+.btn{width:100%;padding:.72rem;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:.88rem;transition:.15s}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.85}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}.btn-ghost:hover{border-color:var(--accent);color:var(--text)}
+.err{color:var(--accent);font-size:.78rem;margin-top:.4rem;text-align:center}
+#app{max-width:760px;margin:0 auto;padding:1.5rem}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.4rem}
+.top-bar h1{font-size:1rem;letter-spacing:.1em;color:var(--accent)}
+.top-bar button{padding:.38rem .85rem;font-size:.78rem;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer}.top-bar button:hover{color:var(--text)}
+.add-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.2rem;margin-bottom:1.4rem}
+.add-card h3{font-size:.75rem;letter-spacing:.08em;color:var(--muted);margin-bottom:.9rem}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+@media(max-width:500px){.row2{grid-template-columns:1fr}}
+.ch-row{display:flex;gap:.5rem}
+.ch-row input{flex:1}
+.ch-row button{padding:.5rem .7rem;border-radius:8px;border:1px solid var(--border);background:var(--input);color:var(--text);cursor:pointer;font-size:.8rem}
+.tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.45rem}
+.tag{background:var(--input);border:1px solid var(--border);border-radius:6px;padding:.18rem .55rem;font-size:.76rem;display:flex;align-items:center;gap:.35rem}
+.tag button{background:none;border:none;color:var(--muted);cursor:pointer;line-height:1}
+.hint{font-size:.71rem;color:var(--muted);margin-top:.3rem}
+.q-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem}
+.q-head span{font-size:.76rem;letter-spacing:.08em;color:var(--accent)}
+.badge{background:var(--border);border-radius:6px;padding:.1rem .45rem;font-size:.78rem}
+.tc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:.8rem}
+.tc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem}
+.tc-name{font-weight:600;font-size:.92rem}
+.pill{font-size:.68rem;padding:.18rem .6rem;border-radius:20px;font-weight:700;letter-spacing:.05em}
+.pill-run{background:rgba(87,242,135,.12);color:#57f287;border:1px solid rgba(87,242,135,.25)}
+.pill-stop{background:rgba(237,66,69,.12);color:#ed4245;border:1px solid rgba(237,66,69,.25)}
+.tc-meta{display:grid;grid-template-columns:1fr 1fr;gap:.28rem .7rem;font-size:.8rem;color:var(--muted);margin-bottom:.7rem}
+.tc-meta b{color:var(--text)}
+.cd{font-size:.8rem;color:var(--accent2);margin-bottom:.6rem;font-weight:600}
+.tc-btns{display:flex;gap:.45rem;flex-wrap:wrap}
+.tc-btns button{padding:.38rem .78rem;font-size:.76rem;border-radius:8px;cursor:pointer;border:1px solid var(--border);background:var(--input);color:var(--text);transition:.12s}
+.tc-btns button:hover{border-color:var(--accent);color:var(--accent)}
+.tc-btns .bs:hover{border-color:var(--accent2);color:var(--accent2)}
+.tc-btns .bd:hover{border-color:#888;color:#888}
+.logs-wrap{margin-top:.65rem;border-top:1px solid var(--border);padding-top:.5rem;display:none}
+.logs-wrap.open{display:block}
+.log{font-size:.74rem;padding:.22rem 0;border-bottom:1px solid rgba(255,255,255,.03);display:flex;gap:.55rem}
+.log-ts{color:var(--muted);white-space:nowrap}
+.lo{color:#57f287}.lw{color:#faa61a}.le{color:#ed4245}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;z-index:99}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem;width:350px;max-width:94vw;position:relative}
+.modal h2{font-size:.95rem;letter-spacing:.07em;color:var(--accent);text-align:center;margin-bottom:1.1rem}
+.mc{position:absolute;top:.7rem;right:.85rem;background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer}
+.snippet{background:rgba(0,0,0,.45);border:1px solid rgba(87,242,135,.2);border-radius:8px;padding:.65rem;font-family:monospace;font-size:.7rem;color:#57f287;word-break:break-all;user-select:all;margin:.45rem 0}
+</style>
+</head>
+<body>
+
+<div id="login-wrap">
+  <div class="login-box">
+    <h2>⚙ KIOR</h2>
+    <div class="field"><label>PASSWORD</label><input type="password" id="lp" placeholder="••••••••"/></div>
+    <div class="err hidden" id="le"></div>
+    <button class="btn btn-primary" onclick="doLogin()">Enter</button>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <div class="top-bar">
+    <h1>⚡ KIOR CONTROL</h1>
+    <button onclick="doLogout()">Logout</button>
+  </div>
+
+  <div class="add-card">
+    <h3>ADD TOKEN</h3>
+    <div class="row2">
+      <div class="field" style="margin:0"><label>DISCORD TOKEN</label><input id="at-tok" type="password" placeholder="Token"/></div>
+      <div class="field" style="margin:0"><label style="opacity:0">x</label><button class="btn btn-ghost" style="width:100%" onclick="openGT()">🔑 GET TOKEN</button></div>
+    </div>
+    <div class="field" style="margin-top:.7rem">
+      <label>MESSAGE <span style="color:var(--muted);font-weight:400">(use | to rotate)</span></label>
+      <input id="at-msg" placeholder="Hello!|Hey there!|What's up?"/>
+      <div class="hint">Random variant picked each send</div>
+    </div>
+    <div class="field" style="margin-top:.7rem">
+      <label>CHANNEL IDs</label>
+      <div class="ch-row"><input id="at-ch" placeholder="123456789012345678"/><button onclick="addCh()">+ Add</button></div>
+      <div class="tags" id="at-tags"></div>
+    </div>
+    <div class="field" style="margin-top:.7rem;max-width:200px"><label>INTERVAL (sec, min 60)</label><input id="at-int" type="number" min="60" value="120"/></div>
+    <div class="err hidden" id="at-err" style="margin-top:.4rem;text-align:left"></div>
+    <button class="btn btn-primary" style="margin-top:.9rem" onclick="addTok()">+ Add Token</button>
+  </div>
+
+  <div class="q-head"><span>TOKEN QUEUE</span><span class="badge" id="q-cnt">0</span></div>
+  <div id="queue"></div>
+</div>
+
+<div class="modal-bg hidden" id="gt-modal">
+  <div class="modal">
+    <button class="mc" onclick="closeGT()">×</button>
+    <h2>🔑 GET TOKEN</h2>
+    <div id="gt-form">
+      <div class="field"><label>EMAIL</label><input id="gt-em" type="email"/></div>
+      <div class="field"><label>PASSWORD</label><input id="gt-pw" type="password"/></div>
+      <div class="err hidden" id="gt-err"></div>
+      <button class="btn btn-primary" style="margin-top:.6rem" onclick="gtSubmit()">Get My Token →</button>
+    </div>
+    <div id="gt-mfa" class="hidden">
+      <p style="font-size:.83rem;color:var(--muted);margin-bottom:.7rem">Enter your 2FA code:</p>
+      <div class="field"><label>MFA CODE</label><input id="gt-mfa-code" placeholder="123456"/></div>
+      <div class="err hidden" id="gt-mfa-err"></div>
+      <button class="btn btn-primary" onclick="gtMfa()">Verify →</button>
+    </div>
+    <div id="gt-popup" class="hidden">
+      <p style="font-size:.83rem;color:var(--muted);line-height:1.6;margin-bottom:.7rem">Captcha required. Open real Discord login, complete captcha, then extract token from console.</p>
+      <button class="btn btn-primary" onclick="gtPopup()">🌐 Open Discord Login</button>
+      <button class="btn btn-ghost" style="margin-top:.5rem;width:100%" onclick="showGT('gt-form')">← Try again</button>
+    </div>
+    <div id="gt-console" class="hidden">
+      <p style="font-size:.81rem;color:var(--muted);margin-bottom:.4rem">In Kiwi DevTools console paste:</p>
+      <div class="snippet">Object.values(webpackChunkdiscord_app.push([[Symbol()],{},e=>e]).c).find(e=>e?.exports?.getToken)?.exports?.getToken()</div>
+      <div class="field" style="margin-top:.65rem"><label>PASTE TOKEN</label><input id="gt-man" placeholder="your.token.here"/></div>
+      <button class="btn btn-primary" onclick="gtManual()">✓ Use This Token</button>
+      <button class="btn btn-ghost" style="margin-top:.45rem;width:100%" onclick="showGT('gt-form')">← Back</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let chs=[], gtTick='', poll=null;
+
+// auth
+async function doLogin(){
+  const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:document.getElementById('lp').value})});
+  const d=await r.json();
+  if(d.ok){show2('login-wrap','app');loadQ();startPoll();}
+  else{se('le',d.error||'Wrong password.');}
+}
+document.getElementById('lp').onkeydown=e=>{if(e.key==='Enter')doLogin();};
+async function doLogout(){await fetch('/api/logout',{method:'POST'});location.reload();}
+(async()=>{const r=await fetch('/api/me');const d=await r.json();if(d.authed){show2('login-wrap','app');loadQ();startPoll();}})();
+
+function show2(hide,show){document.getElementById(hide).classList.add('hidden');document.getElementById(show).classList.remove('hidden');}
+function se(id,msg){const e=document.getElementById(id);e.textContent=msg;e.classList.remove('hidden');}
+function he(id){document.getElementById(id).classList.add('hidden');}
+
+// channels
+function addCh(){const v=document.getElementById('at-ch').value.trim();if(!v||chs.includes(v))return;chs.push(v);renderChs();document.getElementById('at-ch').value='';}
+document.getElementById('at-ch').onkeydown=e=>{if(e.key==='Enter')addCh();};
+function rmCh(v){chs=chs.filter(c=>c!==v);renderChs();}
+function renderChs(){document.getElementById('at-tags').innerHTML=chs.map(c=>`<div class="tag">${c}<button onclick="rmCh('${c}')">×</button></div>`).join('');}
+
+// add token
+async function addTok(){
+  const tok=document.getElementById('at-tok').value.trim();
+  const msg=document.getElementById('at-msg').value.trim();
+  const int=document.getElementById('at-int').value;
+  he('at-err');
+  if(!tok||!msg||!chs.length){se('at-err','Token, message, and channel required.');return;}
+  const r=await fetch('/api/tokens',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:tok,message:msg,channelIds:chs,intervalSeconds:Number(int)})});
+  const d=await r.json();
+  if(!r.ok){se('at-err',d.error||'Failed.');return;}
+  document.getElementById('at-tok').value='';
+  document.getElementById('at-msg').value='';
+  document.getElementById('at-int').value='120';
+  chs=[];renderChs();loadQ();
+}
+
+// queue
+async function loadQ(){
+  const r=await fetch('/api/tokens');
+  if(!r.ok)return;
+  const ts=await r.json();
+  document.getElementById('q-cnt').textContent=ts.length;
+  document.getElementById('queue').innerHTML=ts.length===0
+    ?'<div style="color:var(--muted);font-size:.83rem;text-align:center;padding:2rem">No tokens added yet.</div>'
+    :ts.map(renderTok).join('');
+}
+
+function renderTok(t){
+  const run=t.status==='running';
+  const pill=run?'<span class="pill pill-run">RUNNING</span>':'<span class="pill pill-stop">STOPPED</span>';
+  const cds=t.nextSendAt?cd(t.nextSendAt):'—';
+  const chs2=(t.channelIds||[]).map(c=>`<#${c}>`).join(', ');
+  const logHtml=(t.logs||[]).slice(0,30).map(l=>`<div class="log"><span class="log-ts">${new Date(l.ts).toLocaleTimeString()}</span><span class="${l.status==='success'?'lo':l.status==='warning'?'lw':'le'}">${esc(l.detail)}</span></div>`).join('');
+  return `<div class="tc" id="tc-${t.id}">
+    <div class="tc-top"><span class="tc-name">${esc(t.name)}</span>${pill}</div>
+    <div class="tc-meta">
+      <span><b>Message:</b> ${esc(t.message)}</span>
+      <span><b>Sent:</b> ${t.sentCount}</span>
+      <span><b>Interval:</b> ~${Math.round(t.intervalMs/1000)}s</span>
+      <span><b>Channels:</b> ${esc(chs2)}</span>
+    </div>
+    ${run&&t.nextSendAt?`<div class="cd" id="cd-${t.id}">⏱ Next send: ${cds}</div>`:''}
+    <div class="tc-btns">
+      ${run?`<button onclick="stpTok('${t.id}')">■ Stop</button>`:`<button class="bs" onclick="strTok('${t.id}')">▶ Start</button>`}
+      <button onclick="togLogs('${t.id}')">Logs</button>
+      <button class="bd" onclick="delTok('${t.id}')">Remove</button>
+    </div>
+    <div class="logs-wrap" id="logs-${t.id}">${logHtml||'<div style="color:var(--muted);font-size:.76rem;padding:.35rem 0">No logs yet.</div>'}</div>
+  </div>`;
+}
+
+function cd(iso){const d=new Date(iso).getTime()-Date.now();if(d<=0)return'now';const s=Math.ceil(d/1000);return s<60?`${s}s`:`${Math.floor(s/60)}m ${s%60}s`;}
+function togLogs(id){document.getElementById(`logs-${id}`).classList.toggle('open');}
+async function stpTok(id){await fetch(`/api/tokens/${id}/stop`,{method:'POST'});loadQ();}
+async function strTok(id){await fetch(`/api/tokens/${id}/start`,{method:'POST'});loadQ();}
+async function delTok(id){await fetch(`/api/tokens/${id}`,{method:'DELETE'});loadQ();}
+function startPoll(){clearInterval(poll);poll=setInterval(loadQ,5000);}
+function esc(s){const d=document.createElement('div');d.textContent=String(s);return d.innerHTML;}
+
+// get token modal
+function openGT(){document.getElementById('gt-modal').classList.remove('hidden');showGT('gt-form');}
+function closeGT(){document.getElementById('gt-modal').classList.add('hidden');}
+function showGT(id){['gt-form','gt-mfa','gt-popup','gt-console'].forEach(i=>document.getElementById(i).classList.toggle('hidden',i!==id));}
+
+async function gtSubmit(){
+  he('gt-err');
+  const r=await fetch('/api/gettoken',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:document.getElementById('gt-em').value.trim(),password:document.getElementById('gt-pw').value})});
+  const d=await r.json();
+  if(r.status===429&&d.captcha){showGT('gt-popup');return;}
+  if(!r.ok){se('gt-err',d.error||'Failed.');return;}
+  if(d.mfa){gtTick=d.ticket;showGT('gt-mfa');return;}
+  useTok(d.token);
+}
+async function gtMfa(){
+  he('gt-mfa-err');
+  const r=await fetch('/api/gettoken/mfa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ticket:gtTick,code:document.getElementById('gt-mfa-code').value.trim()})});
+  const d=await r.json();
+  if(!r.ok){se('gt-mfa-err',d.error||'Failed.');return;}
+  useTok(d.token);
+}
+function gtPopup(){
+  const w=500,h=700,l=Math.round(window.screenX+(window.outerWidth-w)/2),t=Math.round(window.screenY+(window.outerHeight-h)/2);
+  window.open('https://discord.com/login','dlogin',`width=${w},height=${h},left=${l},top=${t}`);
+  showGT('gt-console');
+}
+function gtManual(){const t=document.getElementById('gt-man').value.trim();if(t)useTok(t);}
+function useTok(t){document.getElementById('at-tok').value=t;closeGT();}
+</script>
+</body>
+</html>

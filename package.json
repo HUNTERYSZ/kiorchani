@@ -1,0 +1,17 @@
+{
+  "name": "kior-ws",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "ws": "^8.17.1",
+    "node-fetch": "^3.3.2",
+    "dotenv": "^16.4.5"
+  }
+}
